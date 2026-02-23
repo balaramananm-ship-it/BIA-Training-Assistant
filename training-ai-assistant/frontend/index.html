@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Training Assistant</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="nav-content">
+                <div class="nav-logo">
+                    <h1>🤖 AI Training Assistant</h1>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="#" class="nav-link active" data-tab="dashboard">Dashboard</a></li>
+                    <li><a href="#" class="nav-link" data-tab="upload">Upload Documents</a></li>
+                    <li><a href="#" class="nav-link" data-tab="chat">Ask Questions</a></li>
+                    <li><a href="#" class="nav-link" data-tab="quiz">Quiz</a></li>
+                    <li><a href="#" class="nav-link" data-tab="progress">Progress</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <!-- Dashboard Tab -->
+            <section id="dashboard" class="tab-content active">
+                <div class="card-grid">
+                    <div class="card stat-card">
+                        <h3>Documents Uploaded</h3>
+                        <p class="stat-number" id="doc-count">0</p>
+                    </div>
+                    <div class="card stat-card">
+                        <h3>Questions Asked</h3>
+                        <p class="stat-number" id="question-count">0</p>
+                    </div>
+                    <div class="card stat-card">
+                        <h3>Quizzes Completed</h3>
+                        <p class="stat-number" id="quiz-count">0</p>
+                    </div>
+                    <div class="card stat-card">
+                        <h3>Average Score</h3>
+                        <p class="stat-number" id="avg-score">--%</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>Welcome to AI Training Assistant</h2>
+                    <p>This platform helps you learn and develop your skills using AI-powered training materials.</p>
+                    <ul class="feature-list">
+                        <li>📄 Upload training documents (PDF, DOCX, TXT, Markdown)</li>
+                        <li>💬 Ask questions about training materials</li>
+                        <li>📝 Take dynamic quizzes generated from content</li>
+                        <li>📊 Track your learning progress</li>
+                        <li>🚀 Get instant feedback on your answers</li>
+                    </ul>
+                    <div class="system-status">
+                        <h3>System Status</h3>
+                        <p id="health-status">Checking...</p>
+                        <p id="vectorstore-status">Checking...</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Upload Documents Tab -->
+            <section id="upload" class="tab-content">
+                <div class="card">
+                    <h2>📄 Upload Training Documents</h2>
+                    
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-icon">📁</div>
+                        <h3>Drag and drop documents here</h3>
+                        <p>or click to select files</p>
+                        <p class="upload-hint">Supported: PDF, DOCX, TXT, Markdown</p>
+                        <input type="file" id="fileInput" hidden multiple accept=".pdf,.docx,.txt,.md,.markdown">
+                    </div>
+
+                    <div id="uploadProgress" class="hidden">
+                        <div class="progress-bar">
+                            <div id="progressFill" class="progress-fill"></div>
+                        </div>
+                        <p id="uploadStatus">Uploading...</p>
+                    </div>
+
+                    <div id="uploadResult" class="hidden">
+                        <div class="alert alert-success" id="uploadAlert"></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>📊 Vectorstore Status</h2>
+                    <div id="vectorstoreDetails"></div>
+                </div>
+            </section>
+
+            <!-- Chat Tab -->
+            <section id="chat" class="tab-content">
+                <div class="card">
+                    <h2>💬 Ask Questions</h2>
+                    
+                    <div class="chat-container">
+                        <div id="chatMessages" class="chat-messages"></div>
+                    </div>
+
+                    <div class="chat-input-area">
+                        <div class="input-group">
+                            <input 
+                                type="text" 
+                                id="questionInput" 
+                                placeholder="Ask a question about the training materials..."
+                                class="chat-input"
+                            >
+                            <button id="sendButton" class="btn btn-primary">Send</button>
+                        </div>
+                        <small>Press Enter to send or click Send button</small>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quiz Tab -->
+            <section id="quiz" class="tab-content">
+                <div class="card">
+                    <h2>📝 Take a Quiz</h2>
+                    
+                    <div id="quizSetup" class="quiz-setup">
+                        <div class="input-group">
+                            <label for="quizTopic">Quiz Topic (optional):</label>
+                            <input type="text" id="quizTopic" placeholder="e.g., Company Culture, Security">
+                        </div>
+                        <div class="input-group">
+                            <label for="quizCount">Number of Questions:</label>
+                            <select id="quizCount">
+                                <option value="3">3 questions</option>
+                                <option value="5" selected>5 questions</option>
+                                <option value="10">10 questions</option>
+                            </select>
+                        </div>
+                        <button id="generateQuizBtn" class="btn btn-primary">Generate Quiz</button>
+                    </div>
+
+                    <div id="quizLoading" class="loading hidden">
+                        <div class="spinner"></div>
+                        <p>Generating quiz...</p>
+                    </div>
+
+                    <div id="quizContent" class="hidden">
+                        <div id="quizQuestions"></div>
+                        <button id="submitQuizBtn" class="btn btn-success">Submit Quiz</button>
+                    </div>
+
+                    <div id="quizResults" class="hidden">
+                        <div class="results-container">
+                            <h3>Quiz Results</h3>
+                            <div id="resultsContent"></div>
+                            <button id="newQuizBtn" class="btn btn-primary">Take Another Quiz</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Progress Tab -->
+            <section id="progress" class="tab-content">
+                <div class="card">
+                    <h2>📊 Learning Progress</h2>
+                    
+                    <div class="input-group">
+                        <label for="employeeId">Employee ID:</label>
+                        <input type="text" id="employeeId" placeholder="Enter your employee ID">
+                        <button id="loadProgressBtn" class="btn btn-primary">Load Progress</button>
+                    </div>
+
+                    <div id="progressContent" class="hidden">
+                        <div class="progress-grid">
+                            <div class="progress-card">
+                                <h3>Modules Completed</h3>
+                                <p class="progress-stat" id="completedModules">-</p>
+                            </div>
+                            <div class="progress-card">
+                                <h3>Average Quiz Score</h3>
+                                <p class="progress-stat" id="avgQuizScore">--%</p>
+                            </div>
+                        </div>
+
+                        <h3>Module Progress</h3>
+                        <div id="modulesList"></div>
+
+                        <h3>Recent Quiz Attempts</h3>
+                        <div id="quizHistory"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
